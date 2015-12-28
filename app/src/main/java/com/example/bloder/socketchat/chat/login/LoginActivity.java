@@ -26,7 +26,6 @@ import io.socket.emitter.Emitter;
 public class LoginActivity extends AppCompatActivity {
 
     @ViewById protected EditText userName;
-    @ViewById protected EditText password;
 
     @AfterViews
     protected void afterViews(){
