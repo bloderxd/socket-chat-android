@@ -11,6 +11,11 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+        buildConfigField "String", "CHAT_SERVER_ADRESS", '"http://chat.socket.io"'
+        buildConfigField "int", "TYPE_MESSAGE", "0"
+        buildConfigField "int", "TYPE_LOG", "1"
+        buildConfigField "int", "TYPE_ACTION", "2"
     }
     buildTypes {
         release {

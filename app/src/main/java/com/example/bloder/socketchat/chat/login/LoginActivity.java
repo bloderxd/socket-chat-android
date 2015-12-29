@@ -5,9 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.EditText;
 
+import com.example.bloder.socketchat.BuildConfig;
 import com.example.bloder.socketchat.chat.ChatActivity_;
 import com.example.bloder.socketchat.R;
-import com.example.bloder.socketchat.server.ChatServer;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private Socket socket;{
         try{
-            socket = IO.socket(ChatServer.CHAT_SERVER_ADRESS);
+            socket = IO.socket(BuildConfig.CHAT_SERVER_ADRESS);
         }catch (URISyntaxException e){
             throw new RuntimeException(e);
         }

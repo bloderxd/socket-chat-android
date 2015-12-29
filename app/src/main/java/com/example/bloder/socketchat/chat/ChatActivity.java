@@ -5,13 +5,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.bloder.socketchat.BuildConfig;
 import com.example.bloder.socketchat.R;
 import com.example.bloder.socketchat.message.Message;
 import com.example.bloder.socketchat.message.MessageAdapter;
-import com.example.bloder.socketchat.server.ChatServer;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -73,7 +72,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private Socket socket;{
         try{
-            socket = IO.socket(ChatServer.CHAT_SERVER_ADRESS);
+            socket = IO.socket(BuildConfig.CHAT_SERVER_ADRESS);
         }catch (URISyntaxException e){
             throw new RuntimeException(e);
         }
@@ -105,7 +104,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void addLog(String message) {
-        messageList.add(new Message(Message.TYPE_LOG, message, ""));
+        messageList.add(new Message(BuildConfig.TYPE_LOG, message, ""));
         messages.getAdapter().notifyItemInserted(messageList.size()-1);
         scrollToBottom();
     }
@@ -116,13 +115,13 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void addMessage(final String username, final String message) {
-        messageList.add(new Message(Message.TYPE_MESSAGE, message, username));
+        messageList.add(new Message(BuildConfig.TYPE_MESSAGE, message, username));
         messages.getAdapter().notifyItemInserted(messageList.size() - 1);
         scrollToBottom();
     }
 
     private void addTyping(String username) {
-        messageList.add(new Message(Message.TYPE_ACTION, "typing...", username));
+        messageList.add(new Message(BuildConfig.TYPE_ACTION, "typing...", username));
         messages.getAdapter().notifyItemInserted(messageList.size()-1);
         scrollToBottom();
     }
@@ -130,7 +129,7 @@ public class ChatActivity extends AppCompatActivity {
     private void removeTyping(String username) {
         for (int i = messageList.size() - 1; i >= 0; i--) {
             Message message = messageList.get(i);
-            if (message.id == Message.TYPE_ACTION && message.messageUser.equals(username)) {
+            if (message.id == BuildConfig.TYPE_ACTION && message.messageUser.equals(username)) {
                 messageList.remove(i);
                 messages.getAdapter().notifyItemRemoved(i);
             }

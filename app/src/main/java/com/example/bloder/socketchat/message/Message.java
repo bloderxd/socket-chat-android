@@ -5,10 +5,6 @@ package com.example.bloder.socketchat.message;
  */
 public class Message {
 
-    public static final int TYPE_MESSAGE = 0;
-    public static final int TYPE_LOG = 1;
-    public static final int TYPE_ACTION = 2;
-
     public final int id;
     public final String message;
     public final String messageUser;

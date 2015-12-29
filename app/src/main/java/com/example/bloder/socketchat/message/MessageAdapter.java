@@ -21,7 +21,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Internal
 
     @Override
     public InternalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new InternalViewHolder(viewType);
+        return new InternalViewHolder();
     }
 
     @Override
@@ -36,7 +36,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Internal
 
     public class InternalViewHolder extends RecyclerView.ViewHolder {
 
-        public InternalViewHolder(int type) {
+        public InternalViewHolder() {
             super(MessageViewHolder_.build(context));
         }
 
