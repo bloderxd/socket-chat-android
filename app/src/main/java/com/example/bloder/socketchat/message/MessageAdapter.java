@@ -36,15 +36,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Internal
 
     public class InternalViewHolder extends RecyclerView.ViewHolder {
 
-        int type;
-
         public InternalViewHolder(int type) {
             super(MessageViewHolder_.build(context));
-            this.type = type;
         }
 
         public void bind(String username, String message){
-            ((MessageViewHolder) itemView).bind(type, username, message);
+            ((MessageViewHolder) itemView).bind(username, message);
         }
     }
 }

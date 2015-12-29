@@ -36,7 +36,6 @@ import io.socket.emitter.Emitter;
 @EActivity(R.layout.chat_layout)
 public class ChatActivity extends AppCompatActivity {
 
-    private static final int REQUEST_LOGIN = 0;
     private static final int TYPING_TIMER_LENGTH = 600;
     private List<Message> messageList = new ArrayList<>();
     private Boolean typing = false;

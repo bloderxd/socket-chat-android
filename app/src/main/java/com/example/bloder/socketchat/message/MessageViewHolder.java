@@ -22,22 +22,8 @@ public class MessageViewHolder extends LinearLayout {
         super(context);
     }
 
-    public void bind(int type, String username, String message) {
-        switch (type) {
-            case Message.TYPE_MESSAGE:
-                usernameContent.setText(username);
-                messageContent.setText(message);
-                break;
-
-            case Message.TYPE_ACTION:
-                usernameContent.setText(username);
-                messageContent.setText(message);
-                break;
-
-            case Message.TYPE_LOG:
-                usernameContent.setText(username);
-                messageContent.setText(message);
-                break;
-        }
+    public void bind(String username, String message) {
+        usernameContent.setText(username);
+        messageContent.setText(message);
     }
 }
