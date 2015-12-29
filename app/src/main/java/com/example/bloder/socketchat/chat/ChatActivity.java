@@ -126,7 +126,7 @@ public class ChatActivity extends AppCompatActivity {
         scrollToBottom();
     }
 
-    private void removeTyping(String username) {
+    public void removeTyping(String username) {
         for (int i = messageList.size() - 1; i >= 0; i--) {
             Message message = messageList.get(i);
             if (message.id == BuildConfig.TYPE_ACTION && message.messageUser.equals(username)) {
