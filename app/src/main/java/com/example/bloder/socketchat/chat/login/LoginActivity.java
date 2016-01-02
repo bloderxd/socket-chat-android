@@ -46,6 +46,13 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        socket.off("login", onLogin);
+    }
+
     private void loginAttempt() {
         userName.setError(null);
 

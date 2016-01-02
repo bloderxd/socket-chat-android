@@ -92,6 +92,20 @@ public class ChatActivity extends AppCompatActivity {
         typingHandler.postDelayed(onTypingTimeout, TYPING_TIMER_LENGTH);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        socket.disconnect();
+        socket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        socket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        socket.off("new message", onNewMessage);
+        socket.off("user joined", onUserJoined);
+        socket.off("user left", onUserLeft);
+        socket.off("typing", onTyping);
+        socket.off("stop typing", onStopTyping);
+    }
+
     private void configuringSocket() {
         socket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         socket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
