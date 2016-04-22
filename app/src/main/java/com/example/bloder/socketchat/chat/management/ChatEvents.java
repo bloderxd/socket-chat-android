@@ -5,5 +5,10 @@ package com.example.bloder.socketchat.chat.management;
  */
 public interface ChatEvents {
 
-
+    void addLog(String message);
+    void addParticipantsLog(int numUsers);
+    void addMessage(final String username, final String message);
+    void addTyping(String username);
+    void removeTyping(String username);
+    void attemptSend();
 }
