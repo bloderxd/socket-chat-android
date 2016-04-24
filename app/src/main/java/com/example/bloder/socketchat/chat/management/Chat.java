@@ -1,8 +1,11 @@
 package com.example.bloder.socketchat.chat.management;
 
+import android.content.Context;
 import android.support.annotation.UiThread;
 import android.support.v7.widget.RecyclerView;
 
+import com.example.bloder.socketchat.BuildConfig;
+import com.example.bloder.socketchat.R;
 import com.example.bloder.socketchat.message.Message;
 
 import java.util.List;
@@ -14,8 +17,10 @@ public class Chat implements ChatEvents {
 
     private List<Message> messageList;
     private RecyclerView messages;
+    private Context context;
 
-    public Chat(List<Message> messageList, RecyclerView messages) {
+    public Chat(Context context, List<Message> messageList, RecyclerView messages) {
+        this.context = context;
         this.messageList = messageList;
         this.messages = messages;
     }
@@ -23,31 +28,44 @@ public class Chat implements ChatEvents {
     @UiThread
     @Override
     public void addLog(String message) {
-
+        messageList.add(new Message(BuildConfig.TYPE_LOG, message, ""));
+        messages.getAdapter().notifyItemInserted(messageList.size() - 1);
+        scrollToBottom();
     }
 
     @Override
     public void addParticipantsLog(int numUsers) {
-
+        addLog(context.getResources().getQuantityString(R.plurals.message_participants, numUsers, numUsers));
+        scrollToBottom();
     }
 
     @Override
     public void addMessage(String username, String message) {
-
+        messageList.add(new Message(BuildConfig.TYPE_MESSAGE, message, username));
+        messages.getAdapter().notifyItemInserted(messageList.size() - 1);
+        scrollToBottom();
     }
 
     @Override
     public void addTyping(String username) {
-
+        messageList.add(new Message(BuildConfig.TYPE_ACTION, "typing...", username));
+        messages.getAdapter().notifyItemInserted(messageList.size()-1);
+        scrollToBottom();
     }
 
     @Override
     public void removeTyping(String username) {
-
+        for (int i = messageList.size() - 1; i >= 0; i--) {
+            Message message = messageList.get(i);
+            if (message.id == BuildConfig.TYPE_ACTION && message.messageUser.equals(username)) {
+                messageList.remove(i);
+                messages.getAdapter().notifyItemRemoved(i);
+            }
+        }
     }
 
     @Override
-    public void attemptSend() {
-
+    public void scrollToBottom() {
+        messages.scrollToPosition(messages.getAdapter().getItemCount() - 1);
     }
 }
