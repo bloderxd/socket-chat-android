@@ -1,7 +1,6 @@
 package com.example.bloder.socketchat.chat.management;
 
 import android.content.Context;
-import android.support.annotation.UiThread;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.bloder.socketchat.BuildConfig;
@@ -13,7 +12,7 @@ import java.util.List;
 /**
  * Created by bloder on 22/04/16.
  */
-public class Chat implements ChatEvents {
+public class Chat {
 
     private List<Message> messageList;
     private RecyclerView messages;
@@ -25,35 +24,29 @@ public class Chat implements ChatEvents {
         this.messages = messages;
     }
 
-    @UiThread
-    @Override
     public void addLog(String message) {
         messageList.add(new Message(BuildConfig.TYPE_LOG, message, ""));
         messages.getAdapter().notifyItemInserted(messageList.size() - 1);
         scrollToBottom();
     }
 
-    @Override
     public void addParticipantsLog(int numUsers) {
         addLog(context.getResources().getQuantityString(R.plurals.message_participants, numUsers, numUsers));
         scrollToBottom();
     }
 
-    @Override
     public void addMessage(String username, String message) {
         messageList.add(new Message(BuildConfig.TYPE_MESSAGE, message, username));
         messages.getAdapter().notifyItemInserted(messageList.size() - 1);
         scrollToBottom();
     }
 
-    @Override
     public void addTyping(String username) {
         messageList.add(new Message(BuildConfig.TYPE_ACTION, "typing...", username));
         messages.getAdapter().notifyItemInserted(messageList.size()-1);
         scrollToBottom();
     }
 
-    @Override
     public void removeTyping(String username) {
         for (int i = messageList.size() - 1; i >= 0; i--) {
             Message message = messageList.get(i);
@@ -64,7 +57,6 @@ public class Chat implements ChatEvents {
         }
     }
 
-    @Override
     public void scrollToBottom() {
         messages.scrollToPosition(messages.getAdapter().getItemCount() - 1);
     }
