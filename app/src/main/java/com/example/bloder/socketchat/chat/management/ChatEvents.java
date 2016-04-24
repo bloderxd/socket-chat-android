@@ -10,5 +10,5 @@ public interface ChatEvents {
     void addMessage(final String username, final String message);
     void addTyping(String username);
     void removeTyping(String username);
-    void attemptSend();
+    void scrollToBottom();
 }
