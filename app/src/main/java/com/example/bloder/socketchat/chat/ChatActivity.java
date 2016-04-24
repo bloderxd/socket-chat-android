@@ -1,14 +1,15 @@
 package com.example.bloder.socketchat.chat;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.bloder.socketchat.BuildConfig;
 import com.example.bloder.socketchat.R;
+import com.example.bloder.socketchat.chat.management.Chat;
 import com.example.bloder.socketchat.message.Message;
 import com.example.bloder.socketchat.message.MessageAdapter;
 
@@ -26,7 +27,6 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import android.os.Handler;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -39,6 +39,7 @@ public class ChatActivity extends AppCompatActivity {
     private List<Message> messageList = new ArrayList<>();
     private Boolean typing = false;
     private Handler typingHandler = new Handler();
+    private Chat chat;
 
     @ViewById protected RecyclerView messages;
     @ViewById protected EditText messageArea;
@@ -49,6 +50,11 @@ public class ChatActivity extends AppCompatActivity {
     @AfterViews
     protected void afterViews(){
         setupSocket();
+        setupChatEvents();
+    }
+
+    private void setupChatEvents() {
+        chat = new Chat(this, messageList, messages);
     }
 
     @Background
@@ -117,58 +123,20 @@ public class ChatActivity extends AppCompatActivity {
         socket.connect();
     }
 
-    private void addLog(String message) {
-        messageList.add(new Message(BuildConfig.TYPE_LOG, message, ""));
-        messages.getAdapter().notifyItemInserted(messageList.size()-1);
-        scrollToBottom();
-    }
-
-    private void addParticipantsLog(int numUsers) {
-        addLog(getResources().getQuantityString(R.plurals.message_participants, numUsers, numUsers));
-        scrollToBottom();
-    }
-
-    private void addMessage(final String username, final String message) {
-        messageList.add(new Message(BuildConfig.TYPE_MESSAGE, message, username));
-        messages.getAdapter().notifyItemInserted(messageList.size() - 1);
-        scrollToBottom();
-    }
-
-    private void addTyping(String username) {
-        messageList.add(new Message(BuildConfig.TYPE_ACTION, "typing...", username));
-        messages.getAdapter().notifyItemInserted(messageList.size()-1);
-        scrollToBottom();
-    }
-
-    public void removeTyping(String username) {
-        for (int i = messageList.size() - 1; i >= 0; i--) {
-            Message message = messageList.get(i);
-            if (message.id == BuildConfig.TYPE_ACTION && message.messageUser.equals(username)) {
-                messageList.remove(i);
-                messages.getAdapter().notifyItemRemoved(i);
-            }
-        }
-    }
-
     private void attemptSend() {
-        if (null == username) return;
-        if (!socket.connected()) return;
+        if (null == username || !socket.connected()) return;
 
         typing = false;
         String message = messageArea.getText().toString().trim();
-        if (TextUtils.isEmpty(message)) {
+        if (message.isEmpty()) {
             messageArea.requestFocus();
             return;
         }
 
         messageArea.setText("");
-        addMessage(username, message);
+        chat.addMessage(username, message);
 
         socket.emit("new message", message);
-    }
-
-    private void scrollToBottom(){
-        messages.scrollToPosition(messages.getAdapter().getItemCount()-1);
     }
 
     private Emitter.Listener onConnectError = new Emitter.Listener() {
@@ -201,8 +169,8 @@ public class ChatActivity extends AppCompatActivity {
                         return;
                     }
 
-                    removeTyping(username);
-                    addMessage(username, message);
+                    chat.removeTyping(username);
+                    chat.addMessage(username, message);
                 }
             });
         }
@@ -226,8 +194,8 @@ public class ChatActivity extends AppCompatActivity {
                         return;
                     }
 
-                    addLog(getResources().getString(R.string.message_user_joined, username));
-                    addParticipantsLog(numUsers);
+                    chat.addLog(getResources().getString(R.string.message_user_joined, username));
+                    chat.addParticipantsLog(numUsers);
                 }
             });
         }
@@ -249,9 +217,9 @@ public class ChatActivity extends AppCompatActivity {
                         return;
                     }
 
-                    addLog(getResources().getString(R.string.message_user_left, username));
-                    addParticipantsLog(numUsers);
-                    removeTyping(username);
+                    chat.addLog(getResources().getString(R.string.message_user_left, username));
+                    chat.addParticipantsLog(numUsers);
+                    chat.removeTyping(username);
                 }
             });
         }
@@ -273,7 +241,7 @@ public class ChatActivity extends AppCompatActivity {
                         return;
                     }
 
-                    addTyping(username);
+                    chat.addTyping(username);
                 }
             });
         }
@@ -292,7 +260,7 @@ public class ChatActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         return;
                     }
-                    removeTyping(username);
+                    chat.removeTyping(username);
                 }
             });
         }
